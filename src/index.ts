@@ -1,11 +1,15 @@
+import { PrismaClient } from '@prisma/client'
 import express from 'express'
 import morgan from 'morgan'
+
+const db = new PrismaClient({log: ['error', 'info', 'query', 'warn']})
 
 const app = express()
 app.use(morgan('dev'))
 
-app.get('/', (req,res) => {
-    res.json({ hello: 'youtube'})
+app.get('/', async (req,res) => {
+    const posts = await db.post.findMany()
+    res.json(posts)
 })
 
 const port = Number(process.env.PORT ?? 8080)
